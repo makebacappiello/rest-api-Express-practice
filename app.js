@@ -32,22 +32,39 @@ app.get("/quotes", async (req, res) => {
 });
 
 //send a GET request to /quotes/:id to READ(view) a quote
-app.get("/quotes/:id", async (req, res) => {
-  try {
+app.get(
+  "/quotes/:id",
+  asyncHandler(async (req, res) => {
     const quote = await records.getQuote(req.params.id);
     if (quote) {
       res.json(quote);
     } else {
       res.status(404).json({ message: "Quote Not Found..." });
     }
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+  })
+);
 
 //Send a POST request to /quotes to CREATE a new quote
-app.post("/quotes", async (req, res) => {
-  try {
+
+// app.post("/quotes", async (req, res) => {
+//   try {
+//     if (req.body.author && req.body.quote) {
+//       const quote = await records.createQuote({
+//         quote: req.body.quote,
+//         author: req.body.author,
+//       });
+//       res.status(201).json(quote);
+//     } else {
+//       res.status(400).json({ message: "Quote and author required." });
+//     }
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
+
+app.post(
+  "/quotes",
+  asyncHandler(async (req, res) => {
     if (req.body.author && req.body.quote) {
       const quote = await records.createQuote({
         quote: req.body.quote,
@@ -57,14 +74,13 @@ app.post("/quotes", async (req, res) => {
     } else {
       res.status(400).json({ message: "Quote and author required." });
     }
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+  })
+);
 
 //Send a PUT request to /quotes/:id toUPDATE (edit) a quote
-app.put("/quotes/:id", async (req, res) => {
-  try {
+app.put(
+  "/quotes/:id",
+  asyncHandler(async (req, res) => {
     const quote = await records.getQuote(req.params.id);
     if (quote) {
       quote.quote = req.body.quote;
@@ -75,10 +91,8 @@ app.put("/quotes/:id", async (req, res) => {
     } else {
       res.status(404).json({ message: "Quote not found" });
     }
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+  })
+);
 
 //Send a DELETE request to /quotes/:id to DELETE a quote
 app.delete("/quotes/:id", async (req, res, next) => {
